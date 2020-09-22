@@ -3,6 +3,7 @@
 class cMatrix;
 class cVector3
 {
+public:
 	float x;
 	float y;
 	float z;

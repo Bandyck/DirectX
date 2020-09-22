@@ -161,7 +161,6 @@ float cMatrix::Minor(int nRow, int nCol)
 	}
 	return MinorMat.Determinant();
 }
-
 cMatrix cMatrix::Transpose()
 {
 	cMatrix matret(Dimension());
@@ -197,126 +196,235 @@ cMatrix cMatrix::Inverse(OUT float& fDeterminant)
 
 	return matret;
 }
+//cMatrix cMatrix::Translation(float x, float y, float z)
+//{
+//	cMatrix matret = cMatrix::Identity(4);
+//	matret[0][4] = x;
+//	matret[1][4] = y;
+//	matret[2][4] = z;
+//
+//	return matret;
+//}
 cMatrix cMatrix::Translation(float x, float y, float z)
 {
 	cMatrix matret = cMatrix::Identity(4);
-	matret[0][4] = x;
-	matret[1][4] = y;
-	matret[2][4] = z;
+	matret[3][0] = x;
+	matret[3][1] = y;
+	matret[3][2] = z;
 
 	return matret;
 }
+//cMatrix cMatrix::Translation(cVector3 & v)
+//{
+//	cMatrix matret = cMatrix::Identity(4);
+//	matret[0][4] = v.getX();
+//	matret[1][4] = v.getY();
+//	matret[2][4] = v.getZ();
+//
+//	return matret;
+//}
 cMatrix cMatrix::Translation(cVector3 & v)
 {
 	cMatrix matret = cMatrix::Identity(4);
-	matret[0][4] = v.getX();
-	matret[1][4] = v.getY();
-	matret[2][4] = v.getZ();
-
+	matret[3][0] = v.x;
+	matret[3][1] = v.y;
+	matret[3][2] = v.z;
 	return matret;
 }
+//cMatrix cMatrix::RotationX(float angle)
+//{
+//	cMatrix matret = cMatrix::Identity(4);
+//	matret[1][1] = cos(angle);
+//	matret[1][2] = sin(angle);
+//	matret[2][1] = -sin(angle);
+//	matret[2][2] = cos(angle);
+//
+//	return matret;
+//}
 cMatrix cMatrix::RotationX(float angle)
 {
 	cMatrix matret = cMatrix::Identity(4);
-	matret[1][1] = cos(angle);
-	matret[1][2] = sin(angle);
-	matret[2][1] = -sin(angle);
-	matret[2][2] = cos(angle);
+	matret[1][1] = cosf(angle);
+	matret[1][2] = sinf(angle);
+	matret[2][1] = -sinf(angle);
+	matret[2][2] = cosf(angle);
 
 	return matret;
 }
+//cMatrix cMatrix::RotationY(float angle)
+//{
+//	cMatrix matret = cMatrix::Identity(4);
+//	matret[0][0] = cos(angle);
+//	matret[0][3] = -sin(angle);
+//	matret[3][0] = sin(angle);
+//	matret[2][2] = cos(angle);
+//
+//	return matret;
+//}
 cMatrix cMatrix::RotationY(float angle)
 {
 	cMatrix matret = cMatrix::Identity(4);
-	matret[0][0] = cos(angle);
-	matret[0][3] = -sin(angle);
-	matret[3][0] = sin(angle);
-	matret[2][2] = cos(angle);
+	matret[0][0] = cosf(angle);
+	matret[0][2] = -sinf(angle);
+	matret[2][0] = sinf(angle);
+	matret[2][2] = cosf(angle);
 
 	return matret;
 }
+//cMatrix cMatrix::RotationZ(float angle)
+//{
+//	cMatrix matret = cMatrix::Identity(4);
+//	matret[0][0] = cos(angle);
+//	matret[0][1] = sin(angle);
+//	matret[1][0] = -sin(angle);
+//	matret[1][1] = cos(angle);
+//
+//	return matret;
+//}
 cMatrix cMatrix::RotationZ(float angle)
 {
 	cMatrix matret = cMatrix::Identity(4);
-	matret[0][0] = cos(angle);
-	matret[0][1] = sin(angle);
-	matret[1][0] = -sin(angle);
-	matret[1][1] = cos(angle);
+	matret[0][0] = cosf(angle);
+	matret[0][1] = sinf(angle);
+	matret[1][0] = -sinf(angle);
+	matret[1][1] = cosf(angle);
 
 	return matret;
 }
+//cMatrix cMatrix::View(cVector3 & vEye, cVector3 & vLookAt, cVector3 & vUp)
+//{
+//	cVector3 l = (vLookAt - vEye).Normalize();
+//	cVector3 r = (cVector3::Cross(vUp, l).Normalize());
+//	cVector3 u = cVector3::Cross(l, r);
+//
+//	cMatrix matret(4);
+//	
+//	matret[0][0] = r.getX();				matret[0][1] = u.getX();				matret[0][2] = l.getX();				matret[0][3] = 0;
+//	matret[1][0] = r.getY();				matret[1][1] = u.getY();				matret[1][2] = l.getY();				matret[1][3] = 0;
+//	matret[2][0] = r.getZ();				matret[2][1] = u.getZ();				matret[2][2] = l.getZ();				matret[2][3] = 0;
+//	matret[3][0] = -cVector3::Dot(r, vEye);	matret[3][1] = -cVector3::Dot(u, vEye);	matret[3][2] = -cVector3::Dot(l, vEye);	matret[3][3] = 0;
+//
+//	return matret;
+//}
 cMatrix cMatrix::View(cVector3 & vEye, cVector3 & vLookAt, cVector3 & vUp)
 {
 	cVector3 l = (vLookAt - vEye).Normalize();
 	cVector3 r = (cVector3::Cross(vUp, l).Normalize());
-	cVector3 u = cVector3::Cross(l, r);
+	cVector3 u = cVector3::Cross(l, r).Normalize();
 
-	cMatrix matret(4);
-	
-	matret[0][0] = r.getX();				matret[0][1] = u.getX();				matret[0][2] = l.getX();				matret[0][3] = 0;
-	matret[1][0] = r.getY();				matret[1][1] = u.getY();				matret[1][2] = l.getY();				matret[1][3] = 0;
-	matret[2][0] = r.getZ();				matret[2][1] = u.getZ();				matret[2][2] = l.getZ();				matret[2][3] = 0;
-	matret[3][0] = -cVector3::Dot(r, vEye);	matret[3][1] = -cVector3::Dot(u, vEye);	matret[3][2] = -cVector3::Dot(l, vEye);	matret[3][3] = 0;
+	cMatrix matret = cMatrix::Identity(4);
+
+	matret[0][0] = r.x;		matret[0][1] = u.x;		matret[0][2] = l.x;		
+	matret[1][0] = r.y;		matret[1][1] = u.y;		matret[1][2] = l.y;		
+	matret[2][0] = r.z;		matret[2][1] = u.z;		matret[2][2] = l.z;		
+	matret[3][0] = -cVector3::Dot(r, vEye);	
+	matret[3][1] = -cVector3::Dot(u, vEye);	
+	matret[3][2] = -cVector3::Dot(l, vEye);	
+	matret[3][3] = 1;
 
 	return matret;
 }
+//cMatrix cMatrix::View(cVector3 & vEye, cVector3 & vLookAt, cVector3 & vUp)
+//{
+//	cVector3 l = (vLookAt - vEye).Normalize();
+//	cVector3 r = (cVector3::Cross(vUp, l).Normalize());
+//	cVector3 u = cVector3::Cross(l, r);
+//
+//	cMatrix matret(4);
+//
+//	matret[0][0] = r.getX();				matret[0][1] = u.getX();				matret[0][2] = l.getX();				matret[0][3] = 0;
+//	matret[1][0] = r.getY();				matret[1][1] = u.getY();				matret[1][2] = l.getY();				matret[1][3] = 0;
+//	matret[2][0] = r.getZ();				matret[2][1] = u.getZ();				matret[2][2] = l.getZ();				matret[2][3] = 0;
+//	matret[3][0] = -cVector3::Dot(r, vEye);	matret[3][1] = -cVector3::Dot(u, vEye);	matret[3][2] = -cVector3::Dot(l, vEye);	matret[3][3] = 0;
+//
+//	return matret;
+//}
+//cMatrix cMatrix::Projection(float fFovY, float fAspect, float fNearZ, float fFarZ)
+//{
+//	float sy = 1.0f / tanf(fFovY / 2.0f);
+//	float sx = sy / fAspect;
+//
+//	cMatrix matret(4);
+//
+//	matret[0][0] = sx;	matret[0][1] = 0;	matret[0][2] = 0;									matret[0][3] = 0;
+//	matret[1][0] = 0;	matret[1][1] = sy;	matret[1][2] = 0;									matret[1][3] = 0;
+//	matret[2][0] = 0;	matret[2][1] = 0;	matret[2][2] = fFarZ / (fFarZ - fNearZ);			matret[2][3] = 1;
+//	matret[3][0] = 0;	matret[3][1] = 0;	matret[3][2] = -fFarZ*fNearZ / (fFarZ - fNearZ);	matret[3][3] = 0;
+//
+//	return matret;
+//}
 cMatrix cMatrix::Projection(float fFovY, float fAspect, float fNearZ, float fFarZ)
 {
-	float sy = 1.0f / tanf(fFovY / 2.0f);
-	float sx = sy / fAspect;
+	float fScaleY = 1.0f / tanf(fFovY / 2.0f);
+	float fScaleX = fScaleY / fAspect;
 
-	cMatrix matret(4);
+	cMatrix matret = cMatrix::Identity(4);
 
-	matret[0][0] = sx;	matret[0][1] = 0;	matret[0][2] = 0;									matret[0][3] = 0;
-	matret[1][0] = 0;	matret[1][1] = sy;	matret[1][2] = 0;									matret[1][3] = 0;
-	matret[2][0] = 0;	matret[2][1] = 0;	matret[2][2] = fFarZ / (fFarZ - fNearZ);			matret[2][3] = 1;
-	matret[3][0] = 0;	matret[3][1] = 0;	matret[3][2] = -fFarZ*fNearZ / (fFarZ - fNearZ);	matret[3][3] = 0;
+	matret[0][0] = fScaleX;	
+	matret[1][1] = fScaleY;	
+	matret[2][2] = fFarZ / (fFarZ - fNearZ);
+	matret[2][3] = 1.0f;
+	matret[3][2] = -fFarZ * fNearZ / (fFarZ - fNearZ);	
+	matret[3][3] = 0.0f;
 
 	return matret;
 }
+//cMatrix cMatrix::Viewport(float x, float y, float w, float h, float minz, float maxz)
+//{
+//
+//	cMatrix matret(4);
+//
+//	matret[0][0] = w / 2.0f;		matret[0][1] = 0;				matret[0][2] = 0;			matret[0][3] = 0;
+//	matret[1][0] = 0;				matret[1][1] = -h / 2.0f;		matret[1][2] = 0;			matret[1][3] = 0;
+//	matret[2][0] = 0;				matret[2][1] = 0;				matret[2][2] = maxz - minz;	matret[2][3] = 0;
+//	matret[3][0] = x + w / 2.0f;	matret[3][1] = y + h / 2.0f;	matret[3][2] = minz;		matret[3][3] = 1;
+//
+//	return matret;
+//}
 cMatrix cMatrix::Viewport(float x, float y, float w, float h, float minz, float maxz)
 {
 
-	cMatrix matret(4);
+	cMatrix matret = cMatrix::Identity(4);
 
-	matret[0][0] = w / 2.0f;		matret[0][1] = 0;				matret[0][2] = 0;			matret[0][3] = 0;
-	matret[1][0] = 0;				matret[1][1] = -h / 2.0f;		matret[1][2] = 0;			matret[1][3] = 0;
-	matret[2][0] = 0;				matret[2][1] = 0;				matret[2][2] = maxz - minz;	matret[2][3] = 0;
-	matret[3][0] = x + w / 2.0f;	matret[3][1] = y + h / 2.0f;	matret[3][2] = minz;		matret[3][3] = 1;
+	matret[0][0] = w / 2.0f;
+	matret[1][1] = -h / 2.0f;
+	matret[2][2] = maxz - minz;
+	matret[3][0] = x + (w / 2.0f);	
+	matret[3][1] = y + (h / 2.0f);	
+	matret[3][2] = minz;
 
 	return matret;
 }
-/*
-	View Matrix
-		eye, look at, up
-		l = look vector
-		r = right vector
-		u = up vector
-			
-			r.x			u.x			l.x			0
-			r.y			u.y			l.y			0
-			r.z			u.z			l.z			0
-			-r dot eye	-u dot eye	-l dot eye	0
-*/
-/*
-	Projection Matrix
-		sy = cot(fovy/2)		=> 1.0f / tanf(fFovY/2.0f)
-		sx = sy / aspect
-
-			sx		0		0					0
-			0		sy		0					0
-			0		0		fz/(fz-nz)			1
-			0		0		-fz*nz / (fz-nz)	0
-*/
-/*
-	Viewport Matrix
-		Usually, maxz = 1, minz = 0
-
-			w/2.0f		0			0			0
-			0			-h/2.0f		0			0
-			0			0			maxz-minz	0
-			x+w/2.0f	y+h/2.0f	minz		1
-*/
-/*
-	S*R*T*V*P*Vp
-*/
+///*
+//	View Matrix
+//		eye, look at, up
+//		l = look vector
+//		r = right vector
+//		u = up vector
+//			
+//			r.x			u.x			l.x			0
+//			r.y			u.y			l.y			0
+//			r.z			u.z			l.z			0
+//			-r dot eye	-u dot eye	-l dot eye	1
+//*/
+///*
+//	Projection Matrix
+//		sy = cot(fovy/2)		=> 1.0f / tanf(fFovY/2.0f)
+//		sx = sy / aspect
+//
+//			sx		0		0					0
+//			0		sy		0					0
+//			0		0		fz/(fz-nz)			1
+//			0		0		-fz*nz / (fz-nz)	0
+//*/
+///*
+//	Viewport Matrix
+//		Usually, maxz = 1, minz = 0
+//
+//			w/2.0f		0			0			0
+//			0			-h/2.0f		0			0
+//			0			0			maxz-minz	0
+//			x+w/2.0f	y+h/2.0f	minz		1
+//*/
+///*
+//	S*R*T*V*P*Vp

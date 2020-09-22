@@ -21,8 +21,11 @@
 #include <vector>
 #include <iostream>
 #include <math.h>
-using namespace std;
 
 #include "cVector3.h"
 #include "cMatrix.h"
+
+using namespace std;
+extern HWND g_hWnd;
+#define PI 3.141592f
 // TODO: reference additional headers your program requires here

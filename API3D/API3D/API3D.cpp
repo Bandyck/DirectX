@@ -1,7 +1,13 @@
 #include "stdafx.h"
 #include "API3D.h"
-
+#include "cMainGame.h"	// << : 
 #define MAX_LOADSTRING 100
+
+// >> :
+HWND	g_hWnd;
+cMainGame * g_pMainGame;
+#define TIMER_ID 123
+// << :
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -30,12 +36,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // Perform application initialization:
     if (!InitInstance (hInstance, nCmdShow))
-    {
-        return FALSE;
-    }
+    {	return FALSE;    }
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_API3D));
-
+	// >> :
+	g_pMainGame = new cMainGame;
+	g_pMainGame->Setup();
+	SetTimer(g_hWnd, TIMER_ID, 10, NULL);
+	// << :
     MSG msg;
 
     // Main message loop:
@@ -47,7 +55,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
-
+	// >> :
+	KillTimer(g_hWnd, TIMER_ID);
+	delete g_pMainGame;
+	// << :
     return (int) msg.wParam;
 }
 ATOM MyRegisterClass(HINSTANCE hInstance)
@@ -78,27 +89,34 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
-   {
-      return FALSE;
-   }
+   {	return FALSE;   }
+   
+   // >> :
+   g_hWnd = hWnd;
+   // << :
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
    return TRUE;
 }
-//cVector3 v0(-1, 1, -1);
-//cVector3 v1(1, 1, -1);
-//cVector3 v2(1, -1, -1);
-//cVector3 v3(-1, -1, -1);
-//cVector3 v4(-1, 1, 1);
-//cVector3 v5(1, 1, 1);
-//cVector3 v6(1, -1, 1);
-//cVector3 v7(-1, -1, 1);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	// >> :
+	if (g_pMainGame)
+	{
+		g_pMainGame->WndProc(hWnd, message, wParam, lParam);
+	}
+	// << :
     switch (message)
     {
+	// >> :
+	case WM_TIMER:
+		if (g_pMainGame)
+			g_pMainGame->Update();
+		InvalidateRect(g_hWnd, NULL, false);
+		break;
+	// << :
 	case WM_CREATE: 
 	{
 
@@ -108,8 +126,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-
-            // TODO: Add any drawing code that uses hdc here...
+			// << :
+			if (g_pMainGame)
+				g_pMainGame->Render(hdc);
+			// >> :
             EndPaint(hWnd, &ps);
         }
         break;
